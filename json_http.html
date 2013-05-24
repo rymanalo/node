@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="http://cdn.oesmith.co.uk/morris-0.4.3.min.css">
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+  <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+</head>
+
+<body>
+
+  <h1>Node.js, D3, AJAX... whaaat?!</h1>
+
+
+
+      <button id="button">
+        Button
+      </button>
+      <div id="container" style="display: inline-block;">
+        <svg id="image" style="width: 300px; height: 300px; background-color: #eeeeee;">
+        </svg>
+      </div>
+
+</body>
+<script type="text/javascript">
+  $(document).ready(function() {
+
+    var button = document.getElementById('button');
+    var container = document.getElementById('container');
+    var datapoints;
+
+    $.ajax({
+      url: 'http://127.0.0.1/',
+      method: 'get',
+      dataType: 'jsonp',
+      cache: false,
+      timeout: 5000,
+      jsonpCallback: "myjsonp",
+      success: function(data) {
+        datapoints = data;
+        // $("#test").append(data);
+      }
+      // error: function(jqXHR, textStatus, errorThrown) {
+      //     alert('error ' + textStatus + " " + errorThrown);
+      // }
+    });
+
+
+    button.onclick = function () {
+      var svg = d3.select('div#container svg');
+      var data = datapoints;
+
+      svg.selectAll('rect')
+        .data(data)
+        .enter()
+        .append('rect')
+        .attr("height", 0)
+        .attr("width", 30)
+        .attr("y", 300)
+        .transition()
+        .duration(3000)
+        .attr("height", function(value){return value * 5;})
+        .attr("x", function(value, i){return i * 40;})
+        .attr("y", function(value){return (300 - (value * 5) + 25)})
+        .style('fill', 'blue');
+
+
+    };
+  });
+</script>
+</html>
